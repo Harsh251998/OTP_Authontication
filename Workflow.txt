@@ -1,0 +1,35 @@
+Workflow :- 
+User Registration:
+The user sends a POST request to /register with their details such as first_name, last_name, email, and phone.
+If the email or phone number is already registered, the system responds with an error.
+If not, a new user record is created in the database.
+
+Sending OTP:
+After registration, or for an existing user, the user sends a POST request to /send-otp with their phone number.
+The system generates a 4-digit OTP and stores it in the database.
+If the user already exists, the OTP is updated; otherwise, a new user is created.
+The system sends the OTP via SMS using Twilio.
+
+Verify OTP:
+To verify the OTP, the user sends a POST request to /verify-otp with their phone number and the OTP received.
+The system checks if the user exists and if the OTP is valid (i.e., it has not expired and matches the stored OTP).
+If the OTP is valid, a JWT token is generated for the user. The token is returned to the user for subsequent authenticated requests.
+Once the OTP is successfully verified, it is cleared from the user's record.
+
+JWT Authentication:
+After OTP verification, the user is issued a JWT token.
+This token can be used for secure authentication in subsequent API requests.
+OTP Expiry:
+OTPs are valid for 5 minutes. If an OTP is expired, the user will be required to request a new OTP.
+
+Reset Password:
+Request OTP: User provides email or phone number to request a password reset.
+OTP Generation: An OTP is sent via SMS or email.
+OTP Verification: User enters the OTP; system validates it.
+Password Update: If OTP is valid, user sets a new password, and the system confirms the update.
+
+Update User:
+Request Update: User sends updated details (first name, last name, email, phone).
+Authentication: The user must provide a valid JWT token.
+Validation: The system checks if the new details are valid and not already registered.
+Success/Error: If valid, the user's details are updated; otherwise, an error is returned (e.g., email/phone already in use).
